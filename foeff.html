@@ -3079,16 +3079,21 @@ const UTY = {
 };
 const UTM = {};
 for (const [t, l] of Object.entries(UTY)) l.split(" ").forEach((k) => (UTM[k] = t));
-// "1× glacier hiker" -> Einheiten-Symbol + "1× Glacier Hiker" (Typ = unit_class aus cityEntities, Stellar: steht im Text)
-const popTx = (s) => {
+// "1× glacier hiker" -> {ic: Einheiten-Symbol, name (DE aus I18N.items.UN, sonst Englisch), n: Anzahl} (Typ = unit_class aus cityEntities, Stellar: steht im Text)
+const popU = (s) => {
   const m = /^(\d+)× (?:StellarAgeDiscovery )?(.+)$/.exec(s);
-  if (!m) return esc(s);
+  if (!m) return null;
   const st = /^(fast|heavy melee|light melee|long ranged|short ranged)$/.exec(m[2]),
     ty = st ? st[1].replace(" ", "_") : UTM[m[2].toLowerCase().replace(/[^a-z]/g, "")];
   const key = m[2].toLowerCase().replace(/[^a-z]/g, ""),
     de = LG === "de" && (I18N.items.UN[key] || (st && I18N.items.UNC[ty])),
     name = de || m[2].replace(/\b[a-z]/g, (c) => c.toUpperCase());
-  return `${ty ? ic(ty) : ""}<span class="m">${m[1]}× ${esc(name)}</span>`; // Einheit ist keine Überschrift: Label-Stil wie die anderen Zeilen
+  return { ic: ty ? ic(ty) : "", name, n: +m[1] };
+};
+// Einheitenzeile wie die Wertzeilen: Symbol + Name links (Label-Stil), Anzahl rechts (normale Schrift); lt/rt = Zusatz links/rechts
+const unitRow = (s, lt = "", rt = "") => {
+  const u = popU(s);
+  return `<div class="row"><span class="m">${u ? u.ic + esc(u.name) : esc(s)}${lt}</span><span>${u ? fmt(u.n) : ""}${rt}</span></div>`;
 };
 const fT = (s) =>
     s >= 86400
@@ -3101,9 +3106,10 @@ const fT = (s) =>
     return p
       ? `<h2>${tl("f.prodOpt")}</h2>` +
           p[1]
-            .map(
-              (o) =>
-                `<div class="row"><span>${o[1].map(([k, v]) => `${ic(k)}${fmt(Array.isArray(v) ? v[EI] : v)}`).join(", ")}${popTx(o[2])} <span class="m">${tl("f.in")} ${fT(o[0])}</span></span>${p[0] ? '<span class="m">×2 ★</span>' : ""}</div>`,
+            .map((o) =>
+              o[2]
+                ? unitRow(o[2], ` · ${tl("f.in")} ${fT(o[0])}`, p[0] ? ' <span class="m">×2 ★</span>' : "")
+                : `<div class="row"><span>${o[1].map(([k, v]) => `${ic(k)}${fmt(Array.isArray(v) ? v[EI] : v)}`).join(", ")} <span class="m">${tl("f.in")} ${fT(o[0])}</span></span>${p[0] ? '<span class="m">×2 ★</span>' : ""}</div>`,
             )
             .join("")
       : "";
@@ -4868,7 +4874,7 @@ const setChips = (r, withGrp) =>
         l
           .map((p) => {
             const t = fm(p[1]);
-            return `<div style="margin:0 0 12px"><div class="m" style="margin-bottom:2px"><b>${esc(p[0])}</b>${t ? ` · ${tl("f.in")} ${t}` : ""}</div>${rowsOf(p[2])}${p[3] ? `<div class="m">${esc(p[3])}</div>` : ""}${p[4].length ? `<div class="m" style="margin-top:4px">${tl("f.set.cost")}</div>${rowsOf(p[4])}` : ""}</div>`;
+            return `<div style="margin:0 0 12px"><div class="m" style="margin-bottom:2px"><b>${esc(p[0])}</b>${t ? ` · ${tl("f.in")} ${t}` : ""}</div>${rowsOf(p[2])}${p[3] ? unitRow(p[3]) : ""}${p[4].length ? `<div class="m" style="margin-top:4px">${tl("f.set.cost")}</div>${rowsOf(p[4])}` : ""}</div>`;
           })
           .join("")
       : "";
