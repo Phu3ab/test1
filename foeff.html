@@ -2927,6 +2927,27 @@ async function detImg(root) {
   }
 }
 // Produktionsoptionen (data/jPO.js): je Option Dauer und Menge; Multi-Age: Menge je Zeitalter, hier das gewählte (EI); ×2 ★ = doppelt bei Motivation
+const UTY = {
+  short_ranged:
+    "aavehicle antimaterialsniper archer automaticrifleman crossbowman ghostblaster gravitygunner harpoongrenadier longbowman marksman mountedbowman nailstorm nautilus ninja paratrooper pressurizer rifleman satuplinkunit slinger sniper subcruiser surrogatesoldier teslawalker",
+  fast: "abyssalglider armoredcar attackhelicopter bronzeagechampion cataphract combatdrone dragoon droneswarm energycannon feudalknight gliders horseman hoverhammer hydroelectriceel imperialknight infantryfightingvehicle lancer legendabronze legendagold legendasilver legendbgold legendbsilver mechinfantry mountedlegionnaire permafrostdrone reconraider sentinel stardustsentinel warriormonk",
+  heavy_melee:
+    "armoredswordsman assaulttank battlefortress battletank behemoth colorguard crabmech dismountedknight galacticjuggernaut glacierhiker grenadier hoplite hovertank howitzer icebreaker legionnaire octopod pikeman roninbot shredder stealthtank steelfist steelwarden tank universaltank",
+  light_melee:
+    "augmentedsamurai axehammerwarrior bazooka biedenhaendermercenary commando conscript cosmicblademaster divisiondrones dragondrone drillranger exosoldier jaeger javeliner manta militarydrummer militiaman molecularenforcer observerdrone ranger rogue scimitar spacemarine spearman striketeam ultraap",
+  long_ranged:
+    "balista belt bombarde breechloader cannoniers catapult cavitationtank dreamdustblaster mechartillery medusa missileartillery mobilemicrowavegun overclockorbiter palintona plasmaartillery powerdragon railgununit rfcannon rocketartillery rockettroop sniperbot trebuchet turturret",
+};
+const UTM = {};
+for (const [t, l] of Object.entries(UTY)) l.split(" ").forEach((k) => (UTM[k] = t));
+// "1× glacier hiker" -> Einheiten-Symbol + "1× Glacier Hiker" (Typ = unit_class aus cityEntities, Stellar: steht im Text)
+const popTx = (s) => {
+  const m = /^(\d+)× (?:StellarAgeDiscovery )?(.+)$/.exec(s);
+  if (!m) return esc(s);
+  const st = /^(fast|heavy melee|light melee|long ranged|short ranged)$/.exec(m[2]),
+    ty = st ? st[1].replace(" ", "_") : UTM[m[2].toLowerCase().replace(/[^a-z]/g, "")];
+  return `${ty ? ic(ty) : ""}${m[1]}× ${esc(m[2].replace(/\b[a-z]/g, (c) => c.toUpperCase()))}`;
+};
 const fT = (s) =>
     s >= 86400
       ? +(s / 86400).toFixed(1) + " d"
@@ -2940,7 +2961,7 @@ const fT = (s) =>
           p[1]
             .map(
               (o) =>
-                `<div class="row"><span>${o[1].map(([k, v]) => `${ic(k)}${fmt(Array.isArray(v) ? v[EI] : v)}`).join(", ")}${esc(o[2])} <span class="m">${tl("f.in")} ${fT(o[0])}</span></span>${p[0] ? '<span class="m">×2 ★</span>' : ""}</div>`,
+                `<div class="row"><span>${o[1].map(([k, v]) => `${ic(k)}${fmt(Array.isArray(v) ? v[EI] : v)}`).join(", ")}${popTx(o[2])} <span class="m">${tl("f.in")} ${fT(o[0])}</span></span>${p[0] ? '<span class="m">×2 ★</span>' : ""}</div>`,
             )
             .join("")
       : "";
