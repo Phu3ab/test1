@@ -4854,15 +4854,21 @@ const setChips = (r, withGrp) =>
           )
           .join("")
       : "",
-  // Produktionsoptionen wie im Gebäude-Detail: Ertrag + „in 4 h“, Kosten/Name klein darunter
+  // Produktion: je Option Kopfzeile (Name · in 4 h), Erträge und Kosten als Zeilen (Label links, Wert rechts) wie bei „Kosten“
+  rowsOf = (l) =>
+    l
+      .map(
+        ([k, v, pc]) =>
+          `<div class="row"><span class="m">${ic(k)}${esc(rn(k))}</span><span>${fmt(v)}${pc ? " %" : ""}</span></div>`,
+      )
+      .join(""),
   prodRows = (l) =>
     l.length
       ? `<h2>${tl("f.set.prod")}</h2>` +
         l
           .map((p) => {
-            const t = fm(p[1]),
-              out = [p[2].length ? rl(p[2]) : "", p[3] ? esc(p[3]) : ""].filter(Boolean).join(", ");
-            return `<div style="margin:0 0 8px"><div>${out}${t ? ` <span class="m">${tl("f.in")} ${t}</span>` : ""}</div><div class="m">${esc(p[0])}${p[4].length ? " · " + tl("f.set.cost") + ": " + rl(p[4]) : ""}</div></div>`;
+            const t = fm(p[1]);
+            return `<div style="margin:0 0 12px"><div class="m" style="margin-bottom:2px"><b>${esc(p[0])}</b>${t ? ` · ${tl("f.in")} ${t}` : ""}</div>${rowsOf(p[2])}${p[3] ? `<div class="m">${esc(p[3])}</div>` : ""}${p[4].length ? `<div class="m" style="margin-top:4px">${tl("f.set.cost")}</div>${rowsOf(p[4])}` : ""}</div>`;
           })
           .join("")
       : "";
