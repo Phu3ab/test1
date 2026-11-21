@@ -3068,14 +3068,14 @@ async function detImg(root) {
 // Produktionsoptionen (data/jPO.js): je Option Dauer und Menge; Multi-Age: Menge je Zeitalter, hier das gewählte (EI); ×2 ★ = doppelt bei Motivation
 const UTY = {
   short_ranged:
-    "aavehicle antimaterialsniper archer automaticrifleman crossbowman ghostblaster gravitygunner harpoongrenadier longbowman marksman mountedbowman nailstorm nautilus ninja paratrooper pressurizer rifleman satuplinkunit slinger sniper subcruiser surrogatesoldier teslawalker",
-  fast: "abyssalglider armoredcar attackhelicopter bronzeagechampion cataphract combatdrone dragoon droneswarm energycannon feudalknight gliders horseman hoverhammer hydroelectriceel imperialknight infantryfightingvehicle lancer legendabronze legendagold legendasilver legendbgold legendbsilver mechinfantry mountedlegionnaire permafrostdrone reconraider sentinel stardustsentinel warriormonk",
+    "aavehicle antimaterialsniper archer camelarcher automaticrifleman crossbowman ghostblaster gravitygunner harpoongrenadier longbowman marksman mountedbowman nailstorm nautilus ninja paratrooper pressurizer rifleman satuplinkunit slinger sniper subcruiser surrogatesoldier teslawalker",
+  fast: "abyssalglider armoredcar warchariot attackhelicopter bronzeagechampion cataphract combatdrone dragoon droneswarm energycannon feudalknight gliders horseman hoverhammer hydroelectriceel imperialknight infantryfightingvehicle lancer legendabronze legendagold legendasilver legendbgold legendbsilver mechinfantry mountedlegionnaire permafrostdrone reconraider sentinel stardustsentinel warriormonk",
   heavy_melee:
-    "armoredswordsman assaulttank battlefortress battletank behemoth colorguard crabmech dismountedknight galacticjuggernaut glacierhiker grenadier hoplite hovertank howitzer icebreaker legionnaire octopod pikeman roninbot shredder stealthtank steelfist steelwarden tank universaltank",
+    "armoredswordsman warelephant assaulttank battlefortress battletank behemoth colorguard crabmech dismountedknight galacticjuggernaut glacierhiker grenadier hoplite hovertank howitzer icebreaker legionnaire octopod pikeman roninbot shredder stealthtank steelfist steelwarden tank universaltank",
   light_melee:
-    "augmentedsamurai axehammerwarrior bazooka biedenhaendermercenary commando conscript cosmicblademaster divisiondrones dragondrone drillranger exosoldier jaeger javeliner manta militarydrummer militiaman molecularenforcer observerdrone ranger rogue scimitar spacemarine spearman striketeam ultraap",
+    "khopeshfighter augmentedsamurai axehammerwarrior bazooka biedenhaendermercenary commando conscript cosmicblademaster divisiondrones dragondrone drillranger exosoldier jaeger javeliner manta militarydrummer militiaman molecularenforcer observerdrone ranger rogue scimitar spacemarine spearman striketeam ultraap",
   long_ranged:
-    "balista belt bombarde breechloader cannoniers catapult cavitationtank dreamdustblaster mechartillery medusa missileartillery mobilemicrowavegun overclockorbiter palintona plasmaartillery powerdragon railgununit rfcannon rocketartillery rockettroop sniperbot trebuchet turturret",
+    "balista nubianarcher belt bombarde breechloader cannoniers catapult cavitationtank dreamdustblaster mechartillery medusa missileartillery mobilemicrowavegun overclockorbiter palintona plasmaartillery powerdragon railgununit rfcannon rocketartillery rockettroop sniperbot trebuchet turturret",
 };
 const UTM = {};
 for (const [t, l] of Object.entries(UTY)) l.split(" ").forEach((k) => (UTM[k] = t));
@@ -4874,7 +4874,7 @@ const setChips = (r, withGrp) =>
         l
           .map((p) => {
             const t = fm(p[1]);
-            return `<div style="margin:0 0 12px"><div class="m" style="margin-bottom:2px"><b>${esc(p[0])}</b>${t ? ` · ${tl("f.in")} ${t}` : ""}</div>${rowsOf(p[2])}${p[3] ? unitRow(p[3]) : ""}${p[4].length ? `<div class="m" style="margin-top:4px">${tl("f.set.cost")}</div>${rowsOf(p[4])}` : ""}</div>`;
+            return `<div style="margin:0 0 12px">${l.length == 1 && /^Option \d+$/.test(p[0]) ? (t ? `<div class="m" style="margin-bottom:2px">${tl("f.in")} ${t}</div>` : "") : `<div class="m" style="margin-bottom:2px"><b>${esc(p[0])}</b>${t ? ` · ${tl("f.in")} ${t}` : ""}</div>`}${rowsOf(p[2])}${p[3] ? unitRow(p[3]) : ""}${p[4].length ? `<div class="m" style="margin-top:4px">${tl("f.set.cost")}</div>${rowsOf(p[4])}` : ""}</div>`;
           })
           .join("")
       : "";
