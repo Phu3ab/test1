@@ -4752,6 +4752,56 @@ const SETK = { s4: "4", s16: "16", s2: "2", s8: "8" },
     chief_engineer: "Chefingenieur",
     chief_scientist: "Chefwissenschaftler",
   },
+  RDE3 = {
+    topological_records: "Topologische Aufzeichnungen",
+    unknown_dna: "Unbekannte DNA",
+    credits: "Credits",
+    oxygen_pills: "Sauerstofftabletten",
+    compound_fluid: "Mischflüssigkeiten",
+    asteroid_ice: "Asteroideneis",
+    biotech_crops: "Biotech-Pflanzen",
+    mars_ore: "Mars-Erz",
+    bromine: "Brom",
+    upcycled_hydrocarbons: "Aufbereitete Kohlenwasserstoffe",
+    crystallized_hydrocarbons: "Kristallisierte Kohlenwasserstoffe",
+    experimental_data: "Experimentelle Daten",
+    lubricants: "Schmierstoffe",
+    advanced_dna_data: "Fortgeschrittene DNA-Daten",
+    processed_material: "Verarbeitete Materialien",
+    fusion_reactors: "Fusionsreaktoren",
+    herbal_snack: "Kräutersnack",
+    venus_carbon: "Venus-Kohlenstoff",
+    silver_crystals: "Silberkristalle",
+    compressed_matter_capsule: "Komprimierte Materialkapseln",
+    mars_microbes: "Marsmikroben",
+    microgreen_supplement: "Mikrogras-Paste",
+    isolated_molecules: "Isolierte Moleküle",
+    hypersleep_modules: "Hyperschlaf-Module",
+    nickel: "Nickel",
+    superalloys: "Superlegierungen",
+    bio_creatures: "Bio-Kreaturen",
+    dark_energy_battery: "Dunkle-Energie-Batterien",
+    platinum_crystals: "Platinkristalle",
+    liquid_binder: "Flüssiges Bindemittel",
+    red_algae: "Rote Algen",
+    enhanced_porifera: "Verbesserte Schwämme",
+    glowing_seaweed: "Glühender Seetang",
+    soy_proteins: "Sojaprotein",
+    deep_space_data: "Weltraumdaten",
+    sugar_crystals: "Zuckerkristalle",
+    mission_fusion_cells: "Fusionszellen",
+    ebony: "Ebenholz",
+    lead: "Blei",
+    gems: "Edelsteine",
+    limestone: "Kalkstein",
+    cloth: "Stoff",
+    honey: "Honig",
+    bronze: "Bronze",
+    gunpowder: "Schießpulver",
+    rope: "Seil",
+    brick: "Ziegel",
+    action_points_collection: "Aktionspunkte-Sammlung",
+  },
   TDE = {
     military: "Militär",
     decoration: "Dekoration",
@@ -4772,7 +4822,7 @@ const SETK = { s4: "4", s16: "16", s2: "2", s8: "8" },
   },
   rn = (k) => {
     const s = k.replace(/^(guild_raids|stellar|stel)_/, "");
-    return (LG === "de" ? BDE[k] || RDE[s] || RDE2[s] : BEN[k]) || s.replace(/_/g, " ");
+    return (LG === "de" ? BDE[k] || RDE[s] || RDE2[s] || RDE3[s] : BEN[k]) || s.replace(/_/g, " ");
   },
   tn = (t) => (LG === "de" && TDE[t]) || t.replace(/_/g, " "),
   fm = (s) =>
@@ -4804,6 +4854,7 @@ const setChips = (r, withGrp) =>
           )
           .join("")
       : "",
+  // Produktionsoptionen wie im Gebäude-Detail: Ertrag + „in 4 h“, Kosten/Name klein darunter
   prodRows = (l) =>
     l.length
       ? `<h2>${tl("f.set.prod")}</h2>` +
@@ -4811,7 +4862,7 @@ const setChips = (r, withGrp) =>
           .map((p) => {
             const t = fm(p[1]),
               out = [p[2].length ? rl(p[2]) : "", p[3] ? esc(p[3]) : ""].filter(Boolean).join(", ");
-            return `<div class="row"><span class="m">${esc(p[0])}${t ? " (" + t + ")" : ""}</span><span>${out}${p[4].length ? " ← " + rl(p[4]) : ""}</span></div>`;
+            return `<div style="margin:0 0 8px"><div>${out}${t ? ` <span class="m">${tl("f.in")} ${t}</span>` : ""}</div><div class="m">${esc(p[0])}${p[4].length ? " · " + tl("f.set.cost") + ": " + rl(p[4]) : ""}</div></div>`;
           })
           .join("")
       : "";
