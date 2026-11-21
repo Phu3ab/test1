@@ -508,6 +508,12 @@ td + td {
   select:focus {
     box-shadow: 0 0 0 2px var(--glow);
   }
+  /* Ein-/Ausblenden der Leisten (display wechselt über .hid / hidden): beim Einblenden kurz einblenden */
+  #top,
+  #bot,
+  #moreRow {
+    animation: fadeIn 0.22s ease both;
+  }
 }
 
 /* Ein-/Ausklappen animiert (Chrome: interpolate-size; sonst springt es wie vorher) */
